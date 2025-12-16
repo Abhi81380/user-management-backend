@@ -4,8 +4,12 @@ const cors = require('cors');
 const app = express();
 const fs = require('fs');
 const path = require('path');
-
 // Enable CORS (optional, but safe)
+// const jwt = require('jsonwebtoken');
+// const fetch = require('node-fetch');
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
+require('dotenv').config();
 app.use(cors());
 
 // Parse JSON request body
@@ -103,6 +107,49 @@ app.post('/api/login', (req, res) => {
     userId: user.id,
   });
 });
+
+// === 🤖 CHATBOT API ===
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    const response = await fetch(`${process.env.OPENAI_API_BASE}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'HTTP-Referer': 'http://localhost:4200',  // optional but recommended
+        'X-Title': 'User Management System Chatbot'
+      },
+      body: JSON.stringify({
+        model: 'mistralai/mixtral-8x7b-instruct', // free, fast model
+        messages: [
+          {
+            role: 'system',
+            content: `You are an AI assistant for a User Management System built with Angular and Node.js.
+            You only answer questions related to this project's features, APIs, login, CRUD operations, or structure.
+            If asked unrelated questions, respond: "I can only answer about the User Management System."`,
+          },
+          ...messages,
+        ],
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('❌ OpenRouter API Error:', data);
+      return res.status(response.status).json({ error: data });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error('💥 Chatbot API Error:', err.message);
+    res.status(500).json({ error: 'Chatbot request failed' });
+  }
+});
+
+
 
 // ✅ JWT Authentication Middleware
 function authMiddleware(req, res, next) {
@@ -209,6 +256,7 @@ app.delete('/api/users/:id',  authMiddleware, adminOnly, (req, res) => {
   saveUsers(users);
   res.json({ message: 'User deleted successfully', deletedUser });
 });
+
 
 
 

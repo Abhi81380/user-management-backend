@@ -2,7 +2,7 @@
   {
     "id": 1,
     "firstName": "Abhinand",
-    "lastName": "M",
+    "lastName": "Mv",
     "email": "abhinand@example.com"
   },
   {
@@ -15,12 +15,6 @@
     "id": 4,
     "firstName": "Sneha",
     "lastName": "Pate",
-    "email": "sneha.patel@example.com"
-  },
-  {
-    "id": 5,
-    "firstName": "Sneha",
-    "lastName": "Patel",
     "email": "sneha.patel@example.com"
   },
   {
@@ -139,8 +133,14 @@
   },
   {
     "id": 27,
-    "firstName": "habib",
-    "lastName": "ab",
-    "email": "habe@gmail.com"
+    "firstName": "user",
+    "lastName": "user",
+    "email": "user@gmail.com"
+  },
+  {
+    "id": 29,
+    "firstName": "manoj",
+    "lastName": "kumar",
+    "email": "manoj@email.com"
   }
 ]
